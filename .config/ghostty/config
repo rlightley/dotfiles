@@ -1,3 +1,7 @@
 background-opacity = 70
 background-blur-radius = 20
 theme = catppuccin mocha
+window-padding-x = 15
+window-padding-y = 15
+window-padding-color = extend 
+window-padding-balance = true
