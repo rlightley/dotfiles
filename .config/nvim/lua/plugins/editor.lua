@@ -6,69 +6,6 @@ return {
     lazy = false,
     priority = 1000,
     config = function()
-      local function apply_code_highlights(colors)
-        local set_hl = vim.api.nvim_set_hl
-
-        local highlights = {
-          Function = { fg = colors.blue, bold = true },
-          Identifier = { fg = colors.text },
-          Type = { fg = colors.yellow, bold = true, italic = true },
-          Structure = { fg = colors.yellow, bold = true, italic = true },
-          ["@module"] = { fg = colors.lavender, bold = true },
-          ["@namespace"] = { fg = colors.lavender, bold = true },
-          ["@function"] = { fg = colors.blue, bold = true },
-          ["@function.call"] = { fg = colors.blue, bold = true },
-          ["@function.method"] = { fg = colors.sapphire, bold = true },
-          ["@function.method.call"] = { fg = colors.sapphire, bold = true },
-          ["@function.builtin"] = { fg = colors.red, bold = true },
-          ["@variable"] = { fg = colors.text },
-          ["@variable.member"] = { fg = colors.lavender },
-          ["@parameter"] = { fg = colors.maroon, italic = true },
-          ["@variable.parameter"] = { fg = colors.maroon, italic = true },
-          ["@type"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@type.builtin"] = { fg = colors.peach, bold = true, italic = true },
-          ["@type.definition"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@property"] = { fg = colors.teal },
-          ["@field"] = { fg = colors.teal },
-          ["@lsp.type.function"] = { fg = colors.blue, bold = true },
-          ["@lsp.type.method"] = { fg = colors.sapphire, bold = true },
-          ["@lsp.type.variable"] = { fg = colors.text },
-          ["@lsp.type.parameter"] = { fg = colors.maroon, italic = true },
-          ["@lsp.type.property"] = { fg = colors.teal },
-          ["@lsp.type.type"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@lsp.type.struct"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@lsp.type.interface"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@lsp.type.typeParameter"] = { fg = colors.peach, bold = true, italic = true },
-          ["@function.go"] = { fg = colors.blue, bold = true },
-          ["@function.call.go"] = { fg = colors.blue, bold = true },
-          ["@function.method.go"] = { fg = colors.sapphire, bold = true },
-          ["@function.method.call.go"] = { fg = colors.sapphire, bold = true },
-          ["@function.builtin.go"] = { fg = colors.red, bold = true },
-          ["@module.go"] = { fg = colors.lavender, bold = true },
-          ["@namespace.go"] = { fg = colors.lavender, bold = true },
-          ["@variable.go"] = { fg = colors.text },
-          ["@variable.member.go"] = { fg = colors.lavender },
-          ["@parameter.go"] = { fg = colors.maroon, italic = true },
-          ["@variable.parameter.go"] = { fg = colors.maroon, italic = true },
-          ["@type.go"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@type.definition.go"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@property.go"] = { fg = colors.teal },
-          ["@field.go"] = { fg = colors.teal },
-          ["@lsp.type.function.go"] = { fg = colors.blue, bold = true },
-          ["@lsp.type.method.go"] = { fg = colors.sapphire, bold = true },
-          ["@lsp.type.variable.go"] = { fg = colors.text },
-          ["@lsp.type.parameter.go"] = { fg = colors.maroon, italic = true },
-          ["@lsp.type.property.go"] = { fg = colors.teal },
-          ["@lsp.type.struct.go"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@lsp.type.interface.go"] = { fg = colors.yellow, bold = true, italic = true },
-          ["@lsp.type.type.go"] = { fg = colors.yellow, bold = true, italic = true },
-        }
-
-        for group, spec in pairs(highlights) do
-          set_hl(0, group, spec)
-        end
-      end
-
       require("catppuccin").setup({
         flavour = "mocha",
         transparent_background = false,
@@ -192,16 +129,6 @@ return {
         end,
       })
       vim.cmd.colorscheme("catppuccin")
-
-      local colors = require("catppuccin.palettes").get_palette("mocha")
-      apply_code_highlights(colors)
-
-      vim.api.nvim_create_autocmd("ColorScheme", {
-        pattern = "catppuccin",
-        callback = function()
-          apply_code_highlights(require("catppuccin.palettes").get_palette("mocha"))
-        end,
-      })
     end,
   },
 
@@ -265,6 +192,7 @@ return {
         { "<leader>h", group = "Harpoon", icon = "󰛢" },
         { "<leader>k", group = "Kubernetes", icon = "󱃾" },
         { "<leader>n", group = "Notifications", icon = "󰍡" },
+        { "<leader>x", group = "Diagnostics/Lint", icon = "󰔫" },
       },
       win = {
         border = "rounded",
@@ -607,9 +535,6 @@ return {
   -- Autopairs
   { "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },
 
-  -- Comments
-  { "numToStr/Comment.nvim", opts = {} },
-
   -- Indent guides
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -628,6 +553,47 @@ return {
     "kdheepak/lazygit.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     keys = { { "<leader>gg", "<cmd>LazyGit<CR>", desc = "LazyGit" } },
+  },
+
+  -- Diffview
+  {
+    "sindrets/diffview.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewFileHistory" },
+    keys = {
+      { "<leader>gd", "<cmd>DiffviewOpen<CR>", desc = "Diff view" },
+      { "<leader>gh", "<cmd>DiffviewFileHistory %<CR>", desc = "File history" },
+      { "<leader>gH", "<cmd>DiffviewFileHistory<CR>", desc = "Repo history" },
+      { "<leader>gD", "<cmd>DiffviewClose<CR>", desc = "Close diff view" },
+    },
+    opts = {
+      enhanced_diff_hl = true,
+      view = {
+        default = { layout = "diff2_horizontal" },
+        merge_tool = { layout = "diff3_horizontal", disable_diagnostics = true },
+      },
+    },
+  },
+
+  -- Todo comments
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    event = "BufReadPost",
+    opts = {},
+    keys = {
+      { "]t", function() require("todo-comments").jump_next() end, desc = "Next todo" },
+      { "[t", function() require("todo-comments").jump_prev() end, desc = "Prev todo" },
+      { "<leader>ft", "<cmd>TodoTelescope<CR>", desc = "Todo comments" },
+    },
+  },
+
+  -- Surround
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    opts = {},
   },
 
   -- Dashboard

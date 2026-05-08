@@ -78,7 +78,7 @@ return {
       "hrsh7th/cmp-path",
       "L3MON4D3/LuaSnip",
       "saadparwaiz1/cmp_luasnip",
-      "zbirenbaum/copilot-cmp",
+      { "zbirenbaum/copilot-cmp", dependencies = { "zbirenbaum/copilot.lua" } },
       "rafamadriz/friendly-snippets",
       "onsails/lspkind.nvim",
     },
@@ -143,10 +143,7 @@ return {
           ["<C-e>"] = cmp.mapping.abort(),
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
           ["<Tab>"] = cmp.mapping(function(fb)
-            local copilot_suggestion = vim.fn["copilot#GetDisplayedSuggestion"]()
-            if copilot_suggestion.text ~= "" then
-              vim.api.nvim_feedkeys(vim.fn["copilot#Accept"](), "n", true)
-            elseif cmp.visible() then cmp.select_next_item()
+            if cmp.visible() then cmp.select_next_item()
             elseif luasnip.expand_or_jumpable() then luasnip.expand_or_jump()
             else fb() end
           end, { "i", "s" }),
@@ -180,7 +177,7 @@ return {
         html = { "prettier" },
         css = { "prettier" },
       },
-      format_on_save = { timeout_ms = 500, lsp_fallback = true },
+      format_on_save = { timeout_ms = 500, lsp_format = "fallback" },
     },
   },
 }

@@ -1,8 +1,5 @@
 export PATH="$PATH:/Users/ryanlightley/.dotnet/tools"
-GOPATH=$HOME/go  PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
-export PATH=$PATH:/usr/local/go/bin
-export PATH=$PATH:$GOPATH/bin
-
+eval "$(mise activate zsh)"
 eval "$(starship init zsh)"
 
 # bun completions

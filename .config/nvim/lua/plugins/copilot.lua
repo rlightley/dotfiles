@@ -1,27 +1,22 @@
 return {
-  -- GitHub Copilot
+  -- GitHub Copilot (Lua rewrite — required for copilot-cmp)
   {
-    "github/copilot.vim",
+    "zbirenbaum/copilot.lua",
     cmd = "Copilot",
     event = "InsertEnter",
-    config = function()
-      -- Disable default Tab mapping, we'll handle it in cmp config
-      vim.g.copilot_no_tab_map = true
-      vim.g.copilot_assume_mapped = true
-      vim.keymap.set("i", "<C-]>", "<Plug>(copilot-next)", { desc = "Next Copilot suggestion" })
-      vim.keymap.set("i", "<M-[>", "<Plug>(copilot-previous)", { desc = "Prev Copilot suggestion" })
-      vim.keymap.set("i", "<C-\\>", "<Plug>(copilot-dismiss)", { desc = "Dismiss Copilot" })
-
-      -- Filetypes to enable
-      vim.g.copilot_filetypes = {
+    opts = {
+      suggestion = { enabled = false },
+      panel = { enabled = false },
+      filetypes = {
         ["*"] = true,
-        ["markdown"] = true,
-        ["yaml"] = true,
-      }
-
-      vim.keymap.set("n", "<leader>cs", "<cmd>Copilot status<CR>", { desc = "Copilot status" })
-      vim.keymap.set("n", "<leader>cA", "<cmd>Copilot auth<CR>", { desc = "Copilot auth" })
-    end,
+        markdown = true,
+        yaml = true,
+      },
+    },
+    keys = {
+      { "<leader>cs", "<cmd>Copilot status<CR>", desc = "Copilot status" },
+      { "<leader>cA", "<cmd>Copilot auth<CR>", desc = "Copilot auth" },
+    },
   },
 
   -- Copilot chat (optional but nice)
@@ -29,7 +24,7 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     branch = "main",
     dependencies = {
-      { "github/copilot.vim" },
+      { "zbirenbaum/copilot.lua" },
       { "nvim-lua/plenary.nvim" },
     },
     cmd = {
